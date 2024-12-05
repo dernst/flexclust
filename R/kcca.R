@@ -13,7 +13,7 @@ mlogit <- function(x){
 ###**********************************************************
 
 
-kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
+kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL, xrange=NULL,
                  group=NULL, control=NULL, simple=FALSE, save.data=FALSE)
 {
     MYCALL <- match.call()
@@ -21,6 +21,11 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     x <- as(x, "matrix")
     x <- family@preproc(x)
     N <- nrow(x)
+    
+    if(length(family@genDist) > 0){
+      family@genDist$genDist <- family@genDist$genDist(x, xrange)
+      family@genDist$storage <- family@genDist$genDist(x)
+    }
     
     if(control@classify=="auto"){
         control@classify="hard"

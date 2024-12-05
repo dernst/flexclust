@@ -63,7 +63,7 @@ stepFlexclust <- function(x, k, nrep=3, verbose=TRUE,
         z[[kn]]@call <- MYCALL1
 
         if(!simple){
-            ## x is usually at the beginning of kcca() pre-porcessed,
+            ## x is usually pre-processed at the beginning of kcca(),
             ## here we have to do it manually!
             z[[kn]] <- simple2kcca(x=z[[kn]]@family@preproc(x),
                                    from=z[[kn]], group=group)
