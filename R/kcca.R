@@ -25,7 +25,8 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     control <- as(control, "flexclustControl")
     
     if(is.null(family@infosOnX$xmethod) && is.data.frame(x)) {
-      family@infosOnX$xmethod <- sapply(x, \(y) class(y)[1])
+      family@infosOnX$xclass <- sapply(x, \(y) class(y)[1])
+      x <- data.matrix(x)
     }
     
     x <- as(x, "matrix")

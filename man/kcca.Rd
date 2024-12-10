@@ -77,9 +77,10 @@ kccaFamily(which=NULL, dist=NULL, cent=NULL, name=which, preproc = NULL,
     \code{xrange=NULL} are method-dependent.}
     
   \item{xmethods}{Character vector specifying the distance measure to
-    be applied to each column in the case of mixed-data methods, such
-    as Gower's distance. If \code{NULL} \& \code{x} is a dataframe,
-    default methods for the different variable types will be applied.
+    be applied to each column of \code{x} in the case of mixed-data
+    methods, such as Gower's distance. If \code{NULL} \& \code{x} is a
+    dataframe, default methods for the different variable types will be
+    applied.
     For more information, see \code{?flexord::distGower}.}
 
   \item{trim}{A number in between 0 and 0.5, if non-zero then trimmed
