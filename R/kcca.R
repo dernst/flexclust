@@ -12,19 +12,29 @@ mlogit <- function(x){
     
 ###**********************************************************
 
-
-kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL, xrange=NULL,
+# TODO: xrange and xmethod right now are new arguments of kcca. I'll write the functions
+#       first, and then decide, where to put them. Maybe new kccaFamily-slot? Maybe
+#       slots only of ExtendedFamily?
+#       Also added them to kcca.Rd. Need to remove them from there afterwards
+#       the spot here in kcca isn't great. I'm not sure about placing it within the
+#       family object, as it is x-related. But I guess choosing dist+cent is also xrelated?
+kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
                  group=NULL, control=NULL, simple=FALSE, save.data=FALSE)
 {
     MYCALL <- match.call()
     control <- as(control, "flexclustControl")
+    
+    if(is.null(family@infosOnX$xmethod) && is.data.frame(x)) {
+      family@infosOnX$xmethod <- sapply(x, \(y) class(y)[1])
+    }
+    
     x <- as(x, "matrix")
     x <- family@preproc(x)
     N <- nrow(x)
     
-    if(length(family@genDist) > 0){
-      family@genDist$genDist <- family@genDist$genDist(x, xrange)
-      family@genDist$storage <- family@genDist$genDist(x)
+    if(!is.null(body(family@genDist))){
+      family@genDist <- family@genDist(x, family@infosOnX$xrange)
+      family@infosOnX$distribution <- family@genDist(x)
     }
     
     if(control@classify=="auto"){

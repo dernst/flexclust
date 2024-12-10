@@ -16,10 +16,11 @@
   Perform k-centroids clustering on a data matrix.
 }
 \usage{
-kcca(x, k, family=kccaFamily("kmeans"), weights=NULL, xrange=NULL
+kcca(x, k, family=kccaFamily("kmeans"), weights=NULL,
      group=NULL, control=NULL, simple=FALSE, save.data=FALSE)
 kccaFamily(which=NULL, dist=NULL, cent=NULL, name=which, preproc = NULL,
-           genDist=NULL, trim=0, groupFun = "minSumClusters")
+           genDist=NULL, xrange=NULL, xmethods=NULL,
+           trim=0, groupFun = "minSumClusters")
 
 \S4method{summary}{kccasimple}(object)
 }
@@ -37,14 +38,6 @@ kccaFamily(which=NULL, dist=NULL, cent=NULL, name=which, preproc = NULL,
 
   \item{weights}{An optional vector of weights to be used in the clustering
     process, cannot be combined with all families.}
-    
-  \item{xrange}{Range of x to be considered. Only used in selected
-    distance/centroid functions for ordinal/categorical/mixed data,
-    ignored for other methods. Possible options are \code{"data range"}
-    (overall range of \code{x}); \code{"variable specific"} (column-specific ranges of \code{x}); a numeric vector of length 2 specifying
-    the desired overall range; or a list with numeric vectors of length 2
-    for each column of matrix \code{x}. If \code{NULL}, it defaults to
-    \code{"data range"} for the relevant methods.}
 
   \item{group}{An optional grouping vector for the data, see details
     below.}
@@ -71,9 +64,23 @@ kccaFamily(which=NULL, dist=NULL, cent=NULL, name=which, preproc = NULL,
     otherwise.}
   
   \item{genDist}{Function for creating a distance function that will be
-    primed on \code{x}. Currently only used for GDM2 distance from the
+    primed on \code{x}. Currently only used for distance measures from the
     add-on package \code{flexord}.
     For more information, see \code{?flexord::distGDM2}.}
+    
+  \item{xrange}{Range of x to be considered. Only used in selected
+    distance/centroid functions for ordinal/categorical/mixed data,
+    ignored for other methods. Possible options are \code{"data range"}
+    (overall range of \code{x}); \code{"variable specific"} (column-specific ranges of \code{x}); a numeric vector of length 2 specifying
+    the desired overall range; or a list with numeric vectors of length 2
+    for each column of matrix \code{x}. Default values for
+    \code{xrange=NULL} are method-dependent.}
+    
+  \item{xmethods}{Character vector specifying the distance measure to
+    be applied to each column in the case of mixed-data methods, such
+    as Gower's distance. If \code{NULL} \& \code{x} is a dataframe,
+    default methods for the different variable types will be applied.
+    For more information, see \code{?flexord::distGower}.}
 
   \item{trim}{A number in between 0 and 0.5, if non-zero then trimmed
     means are used for the \code{kmeans} family, ignored by all other

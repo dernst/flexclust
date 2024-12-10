@@ -6,6 +6,7 @@
 kccaFamily <- function(which=NULL, dist=NULL,
                        cent=NULL, name=which,
                        preproc=NULL, genDist=NULL,
+                       xrange=NULL, xmethods=NULL,
                        trim=0, groupFun="minSumClusters")
 {
     if(is.null(which) && is.null(dist))
@@ -18,10 +19,10 @@ kccaFamily <- function(which=NULL, dist=NULL,
 
     if(!is.null(preproc)) z@preproc <- preproc
     
-    if(!is.null(genDist)){
-      z@genDist$genDist <- genDist
-      z@genDist$storage <- list()
-      }
+    if(!is.null(genDist)) z@genDist <- genDist
+    
+    if(!is.null(xrange)) z@infosOnX$xrange <- xrange
+    if(!is.null(xmethods)) z@infosOnX$xmethods <- xmethods
 
     if(!is.null(which)){
         which <- match.arg(which, c("kmeans", "kmedians",
