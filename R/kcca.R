@@ -12,12 +12,14 @@ mlogit <- function(x){
     
 ###**********************************************************
 
-# TODO: xrange and xmethod right now are new arguments of kcca. I'll write the functions
-#       first, and then decide, where to put them. Maybe new kccaFamily-slot? Maybe
-#       slots only of ExtendedFamily?
+# TODO: xrange and xmethod right now are new arguments of kccaFamily, and
+#       are stored in a slot 'infosOnX'
 #       Also added them to kcca.Rd. Need to remove them from there afterwards
-#       the spot here in kcca isn't great. I'm not sure about placing it within the
-#       family object, as it is x-related. But I guess choosing dist+cent is also xrelated?
+#       I'm not sure about placing it within the
+#       family object, as it is x-related. But I prefer it there than in kcca.
+#       Ofc. kccaExtendedFamily could be its own class that contains kccaFamily,
+#       but would it be possible to access the relevant slots if they're not
+#       referenced in kcca? (I guess yes, 'lexical scoping' again, right?)
 kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
                  group=NULL, control=NULL, simple=FALSE, save.data=FALSE)
 {
@@ -35,10 +37,14 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     N <- nrow(x)
     
     if(!is.null(body(family@genDist))){
-      family@genDist <- family@genDist(x, family@infosOnX$xrange)
-      # family@dist <- function(x, centers){
-      #   family@dist(x, centers, genDist=family@genDist)
-      # }
+      origDist <- body(family@dist)
+      genDist <- family@genDist(x, family@infosOnX$xrange)
+      family@dist <- function(x, centers){
+        origCode <- origDist
+        eval(bquote({
+          .(origCode)
+        }))
+      }
     }
     
     if(control@classify=="auto"){
