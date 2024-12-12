@@ -17,7 +17,9 @@ kccaFamily <- function(which=NULL, dist=NULL,
 
     z <- new("kccaFamily", name=name)
 
-    if(!is.null(preproc)) z@preproc <- preproc
+  #  if(!is.null(preproc)) z@preproc <- preproc
+  #  if(!is.null(preproc)) eval(FAMILY_PREPROC)
+    
     
     if(!is.null(genDist)) z@genDist <- genDist
     
@@ -123,4 +125,8 @@ FAMILY_CLUSTER_ALLCENT <- expression({
         centers
     }
 })
+
+# FAMILY_PREPROC <- expression({
+#   z@preproc <- preproc
+# })
 

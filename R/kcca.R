@@ -24,18 +24,21 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     MYCALL <- match.call()
     control <- as(control, "flexclustControl")
     
-    if(is.null(family@infosOnX$xmethod) && is.data.frame(x)) {
+    if(!all(apply(x, 2, is.numeric))) {
       family@infosOnX$xclass <- sapply(x, \(y) class(y)[1])
       x <- data.matrix(x)
     }
     
-    x <- as(x, "matrix")
+    x <- as(x, "matrix") #would it generally be an option to replace
+    #this line with x <- data.matrix(x)?
     x <- family@preproc(x)
     N <- nrow(x)
     
     if(!is.null(body(family@genDist))){
       family@genDist <- family@genDist(x, family@infosOnX$xrange)
-      family@infosOnX$distribution <- family@genDist(x)
+      # family@dist <- function(x, centers){
+      #   family@dist(x, centers, genDist=family@genDist)
+      # }
     }
     
     if(control@classify=="auto"){
