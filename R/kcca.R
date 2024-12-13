@@ -27,7 +27,7 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     control <- as(control, "flexclustControl")
     
     if(!all(apply(x, 2, is.numeric))) {
-      family@infosOnX$xclass <- sapply(x, \(y) class(y)[1])
+      family@infosOnX$xclass <- sapply(dat, \(y) paste(class(y), collapse=' '))
       x <- data.matrix(x)
     }
     
