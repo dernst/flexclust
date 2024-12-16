@@ -45,6 +45,8 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
           .(origCode)
         }))
       }
+      environment(family@cluster)$z@dist <- family@dist
+      environment(family@allcent)$z@dist <- family@dist
     }
     
     if(control@classify=="auto"){
