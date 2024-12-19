@@ -38,15 +38,23 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     
     if(!is.null(body(family@genDist))){
       origDist <- body(family@dist)
-      genDist <- family@genDist(x, family@infosOnX$xrange)
+      origCent <- body(family@cent)
+      genDist <- family@genDist(x, family@infosOnX)
       family@dist <- function(x, centers){
-        origCode <- origDist
         eval(bquote({
-          .(origCode)
+          .(origDist)
         }))
       }
       environment(family@cluster)$z@dist <- family@dist
       environment(family@allcent)$z@dist <- family@dist
+      if(any(grepl('cent[Optim|Min]', origCent))) {
+        family@cent <- function(x) {
+          eval(bquote({
+            .(origCent)
+          }))
+        }
+        environment(family@allcent)$z@cent <- family@cent
+      }
     }
     
     if(control@classify=="auto"){
