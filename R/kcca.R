@@ -26,15 +26,15 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     MYCALL <- match.call()
     control <- as(control, "flexclustControl")
     
-#    if(!all(apply(x, 2, is.numeric))) {
-      family@infosOnX$xclass <- sapply(dat, \(y) paste(class(y), collapse=' '))
-      x <- data.matrix(x)
-#    }
+    if(!is.null(body(family@genDist))) { #if(family@name == 'kGower') wäre eig. eleganter, weil kGDM2 auch ein genDist hat, aber xclass nicht braucht. ABER 1) würde ich dann in kcca was hardcoden, was nicht in flexclust ist, und 2) kann man argumentieren, dass GDM2 ja auch für mixed data angedacht ist, und das mein nächster Schritt wäre, das auch dort zu implementieren
+      if(is.data.frame(x)) {
+        xclass <- sapply(x, data.class)
+      } else {
+        xclass <- rep('numeric', ncol(x))
+      }
+    }
     
-#    x <- as(x, "matrix") #would it generally be an option to replace
-    #this line with x <- data.matrix(x)?
-      
-#doing this generally right now so my code will work
+    x <- data.matrix(x) #previously: x <- as(x, "matrix")  
     x <- family@preproc(x)
     N <- nrow(x)
     
@@ -47,16 +47,14 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
           .(origDist)
         }))
       }
+      family@cent <- function(x) { #removed the centOpt/Min clause
+        eval(bquote({
+          .(origCent)
+        }))
+      }
       environment(family@cluster)$z@dist <- family@dist
       environment(family@allcent)$z@dist <- family@dist
-      if(any(grepl('cent[Optim|Min]', origCent))) {
-        family@cent <- function(x) {
-          eval(bquote({
-            .(origCent)
-          }))
-        }
-        environment(family@allcent)$z@cent <- family@cent
-      }
+      environment(family@allcent)$z@cent <- family@cent
     }
     
     if(control@classify=="auto"){
