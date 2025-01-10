@@ -26,13 +26,15 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     MYCALL <- match.call()
     control <- as(control, "flexclustControl")
     
-    if(!all(apply(x, 2, is.numeric))) {
+#    if(!all(apply(x, 2, is.numeric))) {
       family@infosOnX$xclass <- sapply(dat, \(y) paste(class(y), collapse=' '))
       x <- data.matrix(x)
-    }
+#    }
     
-    x <- as(x, "matrix") #would it generally be an option to replace
+#    x <- as(x, "matrix") #would it generally be an option to replace
     #this line with x <- data.matrix(x)?
+      
+#doing this generally right now so my code will work
     x <- family@preproc(x)
     N <- nrow(x)
     
