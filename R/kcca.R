@@ -12,14 +12,6 @@ mlogit <- function(x){
     
 ###**********************************************************
 
-# TODO: xrange and xmethod right now are new arguments of kccaFamily, and
-#       are stored in a slot 'infosOnX'
-#       Also added them to kcca.Rd. Need to remove them from there afterwards
-#       I'm not sure about placing it within the
-#       family object, as it is x-related. But I prefer it there than in kcca.
-#       Ofc. kccaExtendedFamily could be its own class that contains kccaFamily,
-#       but would it be possible to access the relevant slots if they're not
-#       referenced in kcca? (I guess yes, 'lexical scoping' again, right?)
 kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
                  group=NULL, control=NULL, simple=FALSE, save.data=FALSE)
 {
