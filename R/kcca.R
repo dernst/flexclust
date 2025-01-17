@@ -41,7 +41,7 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     if(!is.null(body(family@genDist))){
       origDist <- body(family@dist)
       origCent <- body(family@cent)
-      genDist <- family@genDist(x, family@infosOnX)
+      genDist <- family@genDist(x)
       family@dist <- function(x, centers){
         eval(bquote({
           .(origDist)

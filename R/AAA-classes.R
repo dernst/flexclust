@@ -87,8 +87,7 @@ setClass("kccaFamily",
                         cluster="function",
                         preproc="function",
                         groupFun="function",
-                        genDist="function",
-                        infosOnX="list"),
+                        genDist="function"),
          prototype(weighted=FALSE,
                    preproc=function(x) x))
 
