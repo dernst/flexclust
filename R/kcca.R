@@ -32,7 +32,7 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     N <- nrow(x)
     
     if(!is.null(body(family@genDist))){
-      origDist <- body(family@dist) #also tried the assign here but it's more complicated 
+      origDist <- body(family@dist) #also tried the assign here but it's more complicated
       origCent <- body(family@cent)
       genDist <- family@genDist(x)
       family@dist <- function(x, centers){
@@ -182,7 +182,7 @@ initCenters <- function(x, k, family, control)
             k <- as.integer(k)
             if(k<2) stop("number of clusters must be at least 2")
             ## we need to avoid duplicates here
-            x <- na.omit(unique(x))
+            x <- na.omit(unique(x)) #I had done: x <- unique(x) if(!grepl('Gower', family@name)) x <- na.omit(x) but some NA catching is still required
             if(nrow(x) < k)
                 stop("k larger than number of distinct complete data points in x")
             centers <- do.call(control@initcent,
