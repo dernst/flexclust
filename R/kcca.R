@@ -24,6 +24,7 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
       } else {
         xclass <- rep('numeric', ncol(x))
       }
+      assign('xclass', xclass, envir=environment(family@preproc))
     }
     
     x <- data.matrix(x) #previously: x <- as(x, "matrix")  
