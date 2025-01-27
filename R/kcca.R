@@ -32,7 +32,7 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     N <- nrow(x)
     
     if(!is.null(body(family@genDist))){
-      origDist <- body(family@dist)
+      origDist <- body(family@dist) #also tried the assign here but it's more complicated 
       origCent <- body(family@cent)
       genDist <- family@genDist(x)
       family@dist <- function(x, centers){
