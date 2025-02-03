@@ -32,22 +32,28 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     N <- nrow(x)
     
     if(!is.null(body(family@genDist))){
-      origDist <- body(family@dist) #also tried the assign here but it's more complicated
-      origCent <- body(family@cent)
+      origDist <- family@dist
+      origCent <- family@cent
       genDist <- family@genDist(x)
-      family@dist <- function(x, centers){
-        eval(bquote({
-          .(origDist)
-        }))
+
+      newdist <- function(x, centers){
+        origDist(x, centers, genDist)
       }
-      family@cent <- function(x) { #removed the centOpt/Min clause
-        eval(bquote({
-          .(origCent)
-        }))
+      newcent <- function(x) { #removed the centOpt/Min clause
+        origCent(x, genDist)
       }
-      environment(family@cluster)$z@dist <- family@dist
-      environment(family@allcent)$z@dist <- family@dist
-      environment(family@allcent)$z@cent <- family@cent
+
+      family_new <- kccaFamily(
+        name     = family@name,
+        dist     = newdist,
+        cent     = newcent,
+        genDist  = family@genDist,
+        preproc  = family@preproc,
+        trim     = family@trim,
+        groupFun = family@groupFun)
+
+      family_orig <- family
+      family <- family_new
     }
     
     if(control@classify=="auto"){
