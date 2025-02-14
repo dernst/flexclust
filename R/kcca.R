@@ -24,7 +24,50 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
       } else {
         xclass <- rep('numeric', ncol(x))
       }
-      assign('xclass', xclass, envir=environment(family@preproc))
+
+      origDist <- family@dist
+      origCent <- family@cent
+      origPreproc <- family@preproc
+      origGenDist <- family@genDist
+
+      newpreproc <- if("xclass" %in% names(formals(origPreproc))) {
+        function(x) origPreproc(x, xclass = xclass)
+      } else {
+        origPreproc
+      }
+
+      newdist <- if("genDist" %in% names(formals(origDist))) {
+        function(x, centers) origDist(x, centers, genDist = genDist)
+      } else {
+        origDist
+      }
+
+      newcent <- if("genDist" %in% names(formals(origCent))) {
+        function(x) origCent(x, genDist = genDist)
+      } else {
+        origCent
+      }
+
+      newgendist <- if("xclass" %in% names(formals(origGenDist))) {
+        function(x) origGenDist(x, xclass = xclass)
+      } else {
+          origGenDist
+      }
+
+
+      family_new <- kccaFamily(
+        name     = family@name,
+        dist     = newdist,
+        cent     = newcent,
+        genDist  = newgendist,
+        preproc  = newpreproc,
+        trim     = family@trim,
+        groupFun = family@groupFun)
+
+      family_orig <- family
+      family <- family_new
+
+
     }
     
     x <- data.matrix(x) #previously: x <- as(x, "matrix")  
@@ -32,28 +75,7 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     N <- nrow(x)
     
     if(!is.null(body(family@genDist))){
-      origDist <- family@dist
-      origCent <- family@cent
       genDist <- family@genDist(x)
-
-      newdist <- function(x, centers){
-        origDist(x, centers, genDist)
-      }
-      newcent <- function(x) { #removed the centOpt/Min clause
-        origCent(x, genDist)
-      }
-
-      family_new <- kccaFamily(
-        name     = family@name,
-        dist     = newdist,
-        cent     = newcent,
-        genDist  = family@genDist,
-        preproc  = family@preproc,
-        trim     = family@trim,
-        groupFun = family@groupFun)
-
-      family_orig <- family
-      family <- family_new
     }
     
     if(control@classify=="auto"){
