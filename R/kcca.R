@@ -17,66 +17,16 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
 {
     MYCALL <- match.call()
     control <- as(control, "flexclustControl")
-    
-    if(!is.null(body(family@genDist))) { #if(family@name == 'kGower') wäre eig. eleganter, weil kGDM2 auch ein genDist hat, aber xclass nicht braucht. ABER 1) würde ich dann in kcca was hardcoden, was nicht in flexclust ist, und 2) kann man argumentieren, dass GDM2 ja auch für mixed data angedacht ist, und das mein nächster Schritt wäre, das auch dort zu implementieren
-      if(is.data.frame(x)) {
-        xclass <- sapply(x, data.class)
-      } else {
-        xclass <- rep('numeric', ncol(x))
-      }
 
-      origDist <- family@dist
-      origCent <- family@cent
-      origPreproc <- family@preproc
-      origGenDist <- family@genDist
-
-      newpreproc <- if("xclass" %in% names(formals(origPreproc))) {
-        function(x) origPreproc(x, xclass = xclass)
-      } else {
-        origPreproc
-      }
-
-      newdist <- if("genDist" %in% names(formals(origDist))) {
-        function(x, centers) origDist(x, centers, genDist = genDist)
-      } else {
-        origDist
-      }
-
-      newcent <- if("genDist" %in% names(formals(origCent))) {
-        function(x) origCent(x, genDist = genDist)
-      } else {
-        origCent
-      }
-
-      newgendist <- if("xclass" %in% names(formals(origGenDist))) {
-        function(x) origGenDist(x, xclass = xclass)
-      } else {
-          origGenDist
-      }
-
-
-      family_new <- kccaFamily(
-        name     = family@name,
-        dist     = newdist,
-        cent     = newcent,
-        genDist  = newgendist,
-        preproc  = newpreproc,
-        trim     = family@trim,
-        groupFun = family@groupFun)
-
-      family_orig <- family
-      family <- family_new
-
-
+    # if we have a genDist function, recreate the family object with new
+    # distance, centroid, etc. functions
+    if(!is.null(body(family@genDist))) {
+        family <- family@genDist(x, family)
     }
     
     x <- data.matrix(x) #previously: x <- as(x, "matrix")  
     x <- family@preproc(x)
     N <- nrow(x)
-    
-    if(!is.null(body(family@genDist))){
-      genDist <- family@genDist(x)
-    }
     
     if(control@classify=="auto"){
         control@classify="hard"
