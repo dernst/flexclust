@@ -62,8 +62,11 @@ kccaFamily(which=NULL, dist=NULL, cent=NULL, name=which, preproc = NULL,
     for family \code{"angle"}, defaults to \code{function(x) x}
     otherwise.}
   
-  \item{genDist}{Function for creating a distance function that will be
-    primed on \code{x}. Currently only used for distance measures from the
+  \item{genDist}{Function for updating the family object setting
+    new distance, centroid and preproc functions primed on \code{x}.
+    The new preproc function should be free of side-effects, as it will
+    be called in two separate instances during one invokation of \code{kcca()}.
+    Currently only used for distance measures from the
     add-on package \code{flexord}.
     For more information, see \code{?flexord::distGDM2} or \code{?flexord::distGower}.}
     
