@@ -9,7 +9,7 @@ bclust <- function (x, k = 2, base.iter = 10, base.k = 20, minsize = 0,
                     resample=TRUE, weights=NULL, maxcluster=base.k, ...) 
 {
     MYCALL <- match.call()
-    x <- as.matrix(x)
+    x <- data.matrix(x)
     xr <- nrow(x)
     xc <- ncol(x)
 

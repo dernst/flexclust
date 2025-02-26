@@ -110,7 +110,7 @@ function(object, data=NULL, ...)
         cluster <- object@cluster
     }
     else {
-        data <- as.matrix(data)
+        data <- data.matrix(data)
         cluster <- object@family@cluster(data, object@centers)
     }
     

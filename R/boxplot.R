@@ -139,7 +139,7 @@ kcca2df <- function(object, data=NULL)
     }
     else
     {
-        data <- as.matrix(data)
+        data <- data.matrix(data)
         cluster <- predict(object, data)
     }
     if(is.null(colnames(data)))
@@ -169,7 +169,7 @@ groupBWplot <- function(x, g, alpha=0.05, correct="holm", xlab="", col=NULL,
 {
     ## body very similar to bwplot,kcca-method -> fix bugs in both
     
-    x <- as.matrix(x)
+    x <- data.matrix(x)
     g <- as.factor(g)
     
     if(!is.null(which))
