@@ -25,8 +25,7 @@ kccaFamily(which=NULL, dist=NULL, cent=NULL, name=which, preproc = NULL,
 }
 \arguments{
   \item{x}{A numeric matrix of data, or an object that can be coerced to
-    such a matrix (such as a numeric vector or a data frame with all
-    numeric columns).}
+    such a matrix using \link[base]{data.matrix}.}
   
   \item{k}{Either the number of clusters, or a vector of cluster
     assignments, or a matrix of initial
@@ -58,19 +57,13 @@ kccaFamily(which=NULL, dist=NULL, cent=NULL, name=which, preproc = NULL,
   \item{cent}{A function for centroid computation, ignored
     if \code{which} is specified.}
 
-  \item{preproc}{Function for data preprocessing. Currently only used
-    for family \code{"angle"}, defaults to \code{function(x) x}
-    otherwise.}
+  \item{preproc}{Function for data preprocessing. Defaults to
+    \code{function(x) x}.}
   
-  \item{genDist}{Function for updating the family object setting
-    new distance, centroid and preproc functions primed on \code{x}.
-    The new preproc function should be free of side-effects, as it will
-    be called in two separate instances during one invokation of \code{kcca()}.
-    Currently only used for distance measures from the
-    add-on package \code{flexord}.
-    For more information, see \code{?flexord::distGDM2} or \code{?flexord::distGower}.}
+  \item{genDist}{Function for updating the family object based on
+    \code{x}.}
     
-\item{trim}{A number in between 0 and 0.5, if non-zero then trimmed
+  \item{trim}{A number in between 0 and 0.5, if non-zero then trimmed
     means are used for the \code{kmeans} family, ignored by all other
     families.}
 

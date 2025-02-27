@@ -18,13 +18,15 @@ kcca <- function(x, k, family=kccaFamily("kmeans"), weights=NULL,
     MYCALL <- match.call()
     control <- as(control, "flexclustControl")
 
-    # if we have a genDist function, recreate the family object with new
-    # distance, centroid, etc. functions
+    # if the genDist slot does not contain a function with body NULL,
+    # modify the family object by calling the genDist function with
+    # the data and the family to re-define the family in a
+    # data-dependent way.
     if(!is.null(body(family@genDist))) {
         family <- family@genDist(x, family)
     }
     
-    x <- data.matrix(x) #previously: x <- as(x, "matrix")  
+    x <- data.matrix(x) # previously: x <- as(x, "matrix")
     x <- family@preproc(x)
     N <- nrow(x)
     
@@ -160,7 +162,7 @@ initCenters <- function(x, k, family, control)
             k <- as.integer(k)
             if(k<2) stop("number of clusters must be at least 2")
             ## we need to avoid duplicates here
-            x <- na.omit(unique(x)) #I had done: x <- unique(x) if(!grepl('Gower', family@name)) x <- na.omit(x) but some NA catching is still required
+            x <- na.omit(unique(x))
             if(nrow(x) < k)
                 stop("k larger than number of distinct complete data points in x")
             centers <- do.call(control@initcent,
